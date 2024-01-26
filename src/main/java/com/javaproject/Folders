@@ -1,0 +1,21 @@
+| PROJECT FOR JAVA
+|-- src
+| |-- Login
+| | |-- LoginController.java
+| | |-- login.fxml
+| |
+| |-- Admin
+| | |-- AdminController.java
+| | |-- Admin.fxml
+| |
+| |-- User
+| | |-- UserController.java
+| | |-- userController.fxml
+| |
+| |-- Manager (or whatever you choose to name it)
+| |-- ManagerController.java
+| |-- Manager.fxml
+|
+|-- otherProjectFiles
+|-- otherConfigFiles
+|-- otherFiles to follow
