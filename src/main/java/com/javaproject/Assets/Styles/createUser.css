@@ -15,3 +15,32 @@
 .fontRegulate {
   -fx-font-family: "Poppins";
 }
+
+.stack-pane {
+  -fx-background-color: transparent;
+  -fx-background-insets: 0;
+}
+
+.Border-Width {
+  -fx-border-width: 3px;
+}
+.Border-Radius {
+  -fx-border-radius: 12px;
+  -fx-background-radius: 12px;
+}
+.Border-Color {
+  -fx-border-color: #e900ff;
+}
+
+.tfForm-Color {
+  -fx-background-color: #181818;
+  -fx-text-fill: #ffffff;
+}
+.d:hover {
+  -fx-border-color: #660099;
+  -fx-border-width: 0 0 3 0;
+}
+
+btn {
+  -fx-background-color: transparent;
+}

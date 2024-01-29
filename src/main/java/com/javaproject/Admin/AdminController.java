@@ -42,7 +42,7 @@ public class AdminController {
 
             try (Connection connection = new ConnectDB().getConnection();
                     PreparedStatement statement = connection
-                            .prepareStatement("SELECT image FROM guidb.users WHERE id = ?")) {
+                            .prepareStatement("SELECT * FROM javaproject.users WHERE id = ?")) {
                 statement.setString(1, loggedInUserId);
 
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -95,8 +95,7 @@ public class AdminController {
         if (loggedInUserId != null) {
             System.out.println("Logged-in user ID: " + loggedInUserId);
         } else {
-            System.out.println("Logged-in user ID is not set");
-            // Handle the case where the loggedInUserId is not set
+            System.out.println("Logged-in user ID is not set"); // Handle the case where the loggedInUserId is not set
         }
     }
 
@@ -147,17 +146,18 @@ public class AdminController {
         }
     }
 
-    private void loadPage(String page) {
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(getClass().getResource("/FXML/" + page +
-                    ".fxml"));
-        } catch (IOException ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    // private void loadPage(String page) {
+    // Parent root = null;
+    // try {
+    // root = FXMLLoader.load(getClass().getResource("/FXML/" + page +
+    // ".fxml"));
+    // } catch (IOException ex) {
+    // Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null,
+    // ex);
+    // }
 
-        bp.setCenter(root);
-    }
+    // bp.setCenter(root);
+    // }
 
     @FXML
     void onLogout(ActionEvent event) {

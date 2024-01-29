@@ -16,36 +16,45 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class createUser {
     @FXML
-    private Label ErrorUsername, errorEmail, errorPassword, errorPassMatch;
+    private Label ErrorUsername,
+            errorEmail,
+            errorPassword,
+            errorPassMatch,
+            tfShowPassword;
 
     @FXML
-    private Button btnCreate;
+    private CheckBox showPassword;
 
     @FXML
-    private Button btnReturn;
+    private TextField tfUsername,
+            tfEmail,
+            tfBirthday,
+            tfPassword,
+            tfConfirmPassword;
 
     @FXML
-    private TextField tfBirthday;
+    private TextField tfShowPassword11;
 
     @FXML
-    private TextField tfConfirmPassword;
+    private PasswordField Pass;
 
     @FXML
-    private TextField tfEmail;
+    private Button btnCreate,
+            btnReturn;
 
-    @FXML
-    private TextField tfPassword;
-
-    @FXML
-    private TextField tfUsername;
-
-    private void validateAndSetError(String input, Label errorLabel, String errorMessage, boolean requireSpecialChar) {
+    private void validateAndSetError(
+            String input, Label errorLabel,
+            String errorMessage,
+            boolean requireSpecialChar,
+            String confirmPassword) {
         if (input.isEmpty()) {
             errorLabel.setText(errorMessage + " cannot be blank");
             System.out.println(errorMessage + " field is blank");
@@ -58,6 +67,20 @@ public class createUser {
             errorLabel.setText("Use a valid email address");
             System.out.println("Email is not a valid email address");
 
+        } else if (errorMessage.equals("Password")) {
+            if (!input.matches("^(?=.*\\W).{8,}$")) {
+                errorLabel
+                        .setText("Password should be at least 8 characters and contain at least one special character");
+
+            } else if (!input.equals(confirmPassword)) {
+                errorPassMatch.setText("Password doesn't match");
+                System.out.println("Password doesn't match");
+
+            } else {
+                errorLabel.setText(""); // Clear the error message from the private label
+                errorPassMatch.setText(""); // Clear the error message from the private label
+                System.out.println(errorMessage + " is valid");
+            }
         } else {
             errorLabel.setText(""); // Clear the error message from the private label
             System.out.println(errorMessage + " is valid");
@@ -72,61 +95,10 @@ public class createUser {
         String confirmPassword = tfConfirmPassword.getText();
         String birthday = tfBirthday.getText();
 
-        // if (username.isEmpty()) {
-        // ErrorUsername.setText("Username cannot be blank");
-        // } else if (username.matches(".*\\W+.*")) {
-        // ErrorUsername.setText("Cannot Contain Special Character");
-        // System.out.println("Username contains a special character");
-        // } else {
-        // System.out.println("Username is valid");
-        // }
-
-        // if (email.isEmpty()) {
-        // errorEmail.setText("Email cannot be blank");
-        // } else if (!email.matches("^(.+)@(.+)$")) {
-        // errorEmail.setText("Use a valid email address");
-        // System.out.println("Email is not valid");
-        // } else {
-        // System.out.println("Email is valid");
-        // }
-
-        // if (password.isEmpty()) {
-        // errorPassword.setText("Password cannot be blank");
-        // } else if (password.length() < 8 || password.length() > 60) {
-        // // password does not meet length requirements
-        // errorPassword.setText("Should contain 8 charaters and special character");
-        // System.out.println("Password should be atleast 8 charaters and containin
-        // special charactes");
-        // } else {
-        // if (!password.equals(confirmPassword)) {
-        // // password and confirm password do not match
-        // errorPassMatch.setText("Password doesn't match");
-        // System.out.println("Password and confirm password do not match");
-        // } else {
-        // // password and confirm password match
-        // System.out.println("Password and confirm password match");
-        // }
-        // }
-
         // In your onCreate method
-        validateAndSetError(username, ErrorUsername, "Username", false);
-        validateAndSetError(email, errorEmail, "Email", false);
-        validateAndSetError(password, errorPassword, "Password", true);
-
-        if (password.isEmpty()) {
-            errorPassword.setText("Password cannot be blank");
-        } else if (!password.matches("^(?=.*\\W).{8,}$")) {
-            errorPassword
-                    .setText("Password should be at least 8 characters and contain at least one special character");
-        } else {
-            if (!password.equals(confirmPassword)) {
-                // password and confirm password do not match
-                errorPassMatch.setText("Password doesn't match");
-            } else {
-                // password and confirm password match
-                errorPassMatch.setText(""); // Clear the error message from the private label
-            }
-        }
+        validateAndSetError(username, ErrorUsername, "Username", false, "");
+        validateAndSetError(email, errorEmail, "Email", false, "");
+        validateAndSetError(password, errorPassword, "Password", true, confirmPassword);
 
         // Check if all validation checks pass
         if (!username.matches(".*\\W+.*") && email.matches("^(.+)@(.+)$")
@@ -136,7 +108,7 @@ public class createUser {
                 Connection connection = connectDB.getConnection();
 
                 // Check for existing username or email
-                String checkQuery = "SELECT * FROM guidb.users WHERE username = ? OR email = ?";
+                String checkQuery = "SELECT * FROM javaproject WHERE username = ? OR email = ?";
                 PreparedStatement checkStatement = connection.prepareStatement(checkQuery);
                 checkStatement.setString(1, username);
                 checkStatement.setString(2, email);
@@ -149,14 +121,14 @@ public class createUser {
                             JOptionPane.ERROR_MESSAGE);
                 } else {
                     // Username and email are unique, proceed with insertion
-                    String insertQuery = "INSERT INTO guidb.users (username, email, pass, birthday, role) VALUES (?, ?, ?, ?, 'user')";
+                    String insertQuery = "INSERT INTO javaproject.users (username, email, pass, birthday, role) VALUES (?, ?, ?, ?, 'user')";
                     PreparedStatement statement = connection.prepareStatement(insertQuery);
                     statement.setString(1, username);
                     statement.setString(2, email);
                     statement.setString(3, password);
                     statement.setString(4, birthday);
                     statement.executeUpdate();
-                    System.out.println("Data successfully inserted into the database");
+
                     JOptionPane.showMessageDialog(null, "Data successfully inserted into the database", "Success",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -171,6 +143,57 @@ public class createUser {
     }
 
     @FXML
+    void initialize() {
+        showPassword.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+            tfShowPassword.setVisible(isSelected);
+            tfShowPassword11.setVisible(isSelected);
+
+        });
+
+        tfPassword.textProperty().addListener((obs, oldText, newText) -> {
+            if (showPassword.isSelected()) {
+                tfShowPassword.setText(newText);
+                tfShowPassword11.setText(newText);
+            }
+        });
+
+        tfShowPassword11.textProperty().addListener((obs, oldText, newText) -> {
+            if (showPassword.isSelected()) {
+                tfPassword.setText(newText);
+                tfShowPassword.setText(newText);
+            }
+        });
+    }
+
+    @FXML
+    void onShow(ActionEvent event) {
+        boolean isSelected = showPassword.isSelected();
+
+        // Toggle visibility based on showPassword state
+        tfShowPassword.setVisible(isSelected);
+        tfShowPassword.setManaged(isSelected);
+        tfShowPassword11.setVisible(isSelected);
+        tfShowPassword11.setManaged(isSelected);
+
+        // if (!tfPassword.isVisible()) {
+        // errorPassword.setVisible(false);
+        // errorPassword.setManaged(false);
+        // } else {
+        // // Always show the errorPassword label
+        // errorPassword.setVisible(true);
+        // errorPassword.setManaged(true);
+        // }
+
+        tfShowPassword11.setText(tfPassword.getText());
+
+        if (isSelected) {
+            tfShowPassword.setText(tfPassword.getText());
+        } else {
+            tfShowPassword.setText("");
+        }
+    }
+
+    @FXML
     void onReturn(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/javaproject/login.fxml"));
@@ -179,7 +202,6 @@ public class createUser {
             stage.setScene(new Scene(root));
             stage.show();
 
-            // Close the current page
             Stage currentPage = (Stage) btnReturn.getScene().getWindow();
             currentPage.close();
         } catch (IOException e) {

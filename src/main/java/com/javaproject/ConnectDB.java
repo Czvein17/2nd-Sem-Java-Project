@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 
 public class ConnectDB {
     Connection connection;
-    String dbname = "javafx";
+    String dbname = "javaproject";
     String username = "root";
     String password = "#17Czvein";
 

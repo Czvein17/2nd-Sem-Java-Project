@@ -124,7 +124,7 @@
             <String fx:value="Font-Regular" />
          </styleClass>
       </Button>
-      <Label fx:id="remainingTimeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="60.0" layoutY="179.0" prefHeight="29.0" prefWidth="273.0" styleClass="Font" stylesheets="@Assets/Style/login.css" textAlignment="JUSTIFY" textFill="RED">
+      <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="60.0" layoutY="179.0" prefHeight="29.0" prefWidth="273.0" styleClass="Font" stylesheets="@Assets/Style/login.css" textAlignment="JUSTIFY" textFill="RED">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

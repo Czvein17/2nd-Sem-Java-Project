@@ -1,0 +1,32 @@
+@font-face {
+  font-family: "Poppins";
+  src: url("../Fonts/Poppins-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../Fonts/Poppins.ttf");
+}
+
+.fontBold {
+  -fx-font-family: "Poppins-Bold";
+}
+
+.fontRegulate {
+  -fx-font-family: "Poppins";
+}
+
+.btn {
+  -fx-background-color: transparent;
+  -fx-text-fill: White; /* Default font color */
+}
+
+.btn:hover {
+  -fx-border-color: #e900ff; /* Active border color when pressed */
+  -fx-border-width: 0 0 3 0; /* Active border width when pressed */
+}
+
+.btn:armed {
+  -fx-background-color: black; /* Active background color when pressed */
+  -fx-text-fill: white; /* Active font color when pressed */
+}

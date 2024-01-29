@@ -5,13 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 import com.javaproject.ConnectDB;
-import com.javaproject.Admin.AdminController;
-import com.javaproject.Manager.managerController;
-import com.javaproject.UserClient.clientController;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -35,16 +31,21 @@ public class loginController {
     ResultSet rs;
 
     @FXML
-    private Button btnCreate;
+    private Button btnCreate, onLogin;
 
     @FXML
-    private Button onLogin;
+    private CheckBox onShowBTN;
+
+    @FXML
+    private Label errorUser, errorPassword;
 
     @FXML
     private PasswordField tfPassword;
 
     @FXML
-    private TextField tfUsername;
+    private TextField tfUsername, ShowPassword;
+
+    private loginHandler loginHandler = new loginHandler(); // Create an instance of the LoginHandler class
 
     @FXML
     private Label remainingTimeLabel;
@@ -56,142 +57,151 @@ public class loginController {
 
     @FXML
     void onClickLogin(javafx.event.ActionEvent event) {
+        String username = tfUsername.getText();
         String email = tfUsername.getText();
         String password = tfPassword.getText();
 
-        if (email.equals("") || password.equals("")) {
-            JOptionPane.showMessageDialog(null, "Username or Password Blank");
+        if (email.isEmpty() || password.isEmpty()) {
+            // loginHandler.showErrorDialog("email and password cannot be blank");
+            errorUser.setText("user or email is empty");
+            errorPassword.setText("password is empty");
+            // Set a 3-second delay before clearing the error messages
+            scheduleErrorClearing();
+
         } else {
             if (remainingSeconds > 0) {
-                JOptionPane.showMessageDialog(null, "Cannot login, please wait for the remaining time.");
+                loginHandler.showErrorDialog("Cannot login, please wait for the remaining time.");
             } else {
                 try {
-                    ConnectDB connectDB = new ConnectDB();
-                    Connection connection = connectDB.getConnection();
-                    pst = connection
-                            .prepareStatement("SELECT * FROM guidb.users WHERE (email=? OR username=? ) AND pass=?");
-
+                    Connection connection = new ConnectDB().getConnection();
+                    PreparedStatement pst = connection
+                            .prepareStatement(
+                                    "SELECT * FROM javaproject.users WHERE (email=? OR username=? ) AND pass=?");
                     pst.setString(1, email);
-                    pst.setString(2, email);
+                    pst.setString(2, username);
                     pst.setString(3, password);
-
-                    rs = pst.executeQuery();
+                    ResultSet rs = pst.executeQuery();
 
                     if (rs.next()) {
-                        String role = rs.getString("role");
-
-                        if (role.equals("admin")) {
-                            FXMLLoader loader = new FXMLLoader(
-                                    getClass().getResource("/com/javaproject/Admin/admin.fxml"));
-                            Parent root = loader.load();
-                            AdminController adminController = loader.getController();
-                            adminController.setLoggedInUserId(getLoggedInUserId(email));
-                            // Pass the logged-in user's ID to the admin controller
-                            Stage stage = new Stage();
-                            stage.setScene(new Scene(root));
-                            stage.show();
-
-                        } else if (role.equals("manager")) {
-
-                            // Redirect to manager page
-                            FXMLLoader loader = new FXMLLoader(
-                                    getClass().getResource("com/javaproject/Manager/manager.fxml"));
-                            Parent root = loader.load();
-                            managerController managerController = loader.getController();
-                            managerController.setLoggedInUserId(getLoggedInUserId(email));
-                            // Pass the logged-in user's ID
-                            // to the manager controller
-                            Stage stage = new Stage();
-                            stage.setScene(new Scene(root));
-                            stage.show();
-
-                        } else if (role.equals("user")) {
-
-                            // Redirect to customer page
-                            FXMLLoader loader = new FXMLLoader(
-                                    getClass().getResource("/com/javaproject/UserClient/clientUser.fxml"));
-                            Parent root = loader.load();
-                            clientController clientController = loader.getController();
-                            clientController.setLoggedInUserId(getLoggedInUserId(email));
-                            // Pass the logged-in user's ID to
-                            // the user controller
-                            Stage stage = new Stage();
-                            stage.setScene(new Scene(root));
-                            stage.show();
-
+                        String storedPassword = rs.getString("pass");
+                        if (!password.equals(storedPassword)) {
+                            errorPassword.setText("Password is incorrect");
+                            errorUser.setText(""); // Clear the username error
+                            loginHandler.clearAndFocusUsername(tfUsername, tfPassword); // Pass the TextField and
                         } else {
-                            // Invalid role, handle error
-                            JOptionPane.showMessageDialog(null, "Invalid role");
+                            String role = rs.getString("role");
+                            loginHandler.handleRoleRedirection(role, email, username, password, onLogin);
                         }
-
-                        // Close the login window
-                        Stage loginStage = (Stage) onLogin.getScene().getWindow();
-                        loginStage.close();
-
                     } else {
-                        JOptionPane.showMessageDialog(null, "Login Failed");
-                        tfUsername.setText("");
-                        tfPassword.setText("");
-                        tfUsername.requestFocus();
+                        errorPassword.setText("Password is incorrect");
+                        // loginHandler.showErrorDialog("Login Failed");
+                        loginHandler.clearAndFocusUsername(tfUsername, tfPassword); // Pass the TextField and
                     }
 
-                } catch (SQLException ex) {
-                    Logger.getLogger(loginController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                } catch (SQLException | IOException ex) {
+                    loginHandler.handleException(ex);
                 }
             }
         }
-
         if (loginAttempts >= 2) {
-            JOptionPane.showMessageDialog(null, "Cannot login, please wait for the remaining time.");
-            long currentTime = System.currentTimeMillis();
-            long timeSinceLastAttempt = currentTime - lastLoginAttemptTime;
-
-            if (timeSinceLastAttempt < 60000) { // 60000 milliseconds = 1 minute
-                long remainingTime = 60000 - timeSinceLastAttempt;
-                remainingSeconds = (int) (remainingTime / 1000);
-                remainingTimeLabel.setText("you can login after " + remainingSeconds + " seconds");
-                remainingTimeUpdater = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateRemainingTime()));
-                remainingTimeUpdater.setCycleCount(Timeline.INDEFINITE);
-                remainingTimeUpdater.play();
-                return; // Stop further login processing
-
-            } else {
-                loginAttempts = 0; // Reset login attempts
-                remainingTimeLabel.setText(""); // Clear the remaining time label
-            }
+            loginHandler.showErrorDialog("Exceeded maximum login attempts. Please try again later.");
+            return;
         }
+
+        long currentTime = System.currentTimeMillis();
+        long timeSinceLastAttempt = currentTime - lastLoginAttemptTime;
+
+        if (timeSinceLastAttempt < 60000) { // 60000 milliseconds = 1 minute
+            long remainingTime = 60000 - timeSinceLastAttempt;
+            remainingSeconds = (int) (remainingTime / 1000);
+            remainingTimeLabel.setText("You can login after " + remainingSeconds + " seconds");
+            remainingTimeUpdater = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateRemainingTime()));
+            remainingTimeUpdater.setCycleCount(Timeline.INDEFINITE);
+            remainingTimeUpdater.play();
+            return; // Stop further login processing
+        } else {
+            loginAttempts = 0; // Reset login attempts
+            remainingTimeLabel.setText(""); // Clear the remaining time label
+        }
+
         loginAttempts++;
         lastLoginAttemptTime = System.currentTimeMillis();
     }
 
     private void updateRemainingTime() {
         remainingSeconds--;
+
         if (remainingSeconds > 0) {
-            remainingTimeLabel.setText("you can login after " + remainingSeconds + " seconds");
+            remainingTimeLabel.setText("You can login after " + remainingSeconds + " seconds");
+
         } else {
             remainingTimeLabel.setText(""); // Clear the remaining time label
             remainingTimeUpdater.stop();
         }
     }
 
-    private String getLoggedInUserId(String email) {
-        // Your logic to get the logged-in user's ID from the database
-        try {
-            ConnectDB connectDB = new ConnectDB();
-            Connection connection = connectDB.getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT id FROM guidb.users WHERE email=?");
-            statement.setString(1, email);
-            ResultSet resultSet = statement.executeQuery();
+    @FXML
+    void initialize() {
+        onShowBTN.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+            ShowPassword.setVisible(isSelected);
+            tfPassword.setVisible(!isSelected); // Toggle visibility of tfPassword
+            tfPassword.setManaged(!isSelected); // Toggle manageability of tfPassword
+        });
 
-            if (resultSet.next()) {
-                return resultSet.getString("id");
+        tfPassword.textProperty().addListener((obs, oldText, newText) -> {
+            if (onShowBTN.isSelected()) {
+                ShowPassword.setText(newText);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(loginController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        });
+
+        ShowPassword.textProperty().addListener((obs, oldText, newText) -> {
+            if (onShowBTN.isSelected()) {
+                tfPassword.setText(newText);
+            }
+        });
+
+        ShowPassword.setOnAction(event -> {
+            if (onShowBTN.isSelected()) {
+                tfPassword.setText(ShowPassword.getText());
+                ShowPassword.setText(ShowPassword.getText());
+            } else {
+                tfPassword.setText("");
+                ShowPassword.setText("");
+            }
+        });
+    }
+
+    @FXML
+    void onShow(ActionEvent event) {
+        boolean isSelected = onShowBTN.isSelected();
+
+        // Toggle visibility of tfPassword based on showPassword state
+        tfPassword.setVisible(!isSelected);
+        tfPassword.setManaged(!isSelected);
+
+        if (!tfPassword.isVisible()) {
+            errorPassword.setVisible(true);
+            errorPassword.setManaged(true);
+        } else {
+            // Always show the errorPassword label
+            errorPassword.setVisible(true);
+            errorPassword.setManaged(true);
         }
-        return null; // Return null if the logged-in user's ID cannot be found
+
+        if (isSelected) {
+            ShowPassword.setText(tfPassword.getText());
+        } else {
+            ShowPassword.setText("");
+        }
+    }
+
+    // New method to schedule error clearing after 3 seconds
+    private void scheduleErrorClearing() {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), e -> {
+            errorUser.setText("");
+            errorPassword.setText("");
+        }));
+        timeline.play();
     }
 
     @FXML

@@ -34,6 +34,10 @@ public class UserController {
         initialize();
     }
 
+    public Connection dataConnect() {
+        return new ConnectDB().getConnection();
+    }
+
     @FXML
     private ImageView DisplayImage;
 
@@ -73,7 +77,7 @@ public class UserController {
 
             try (Connection connection = new ConnectDB().getConnection();
                     PreparedStatement statement = connection
-                            .prepareStatement("SELECT image FROM guidb.users WHERE id = ?")) {
+                            .prepareStatement("SELECT image FROM javaproject.users WHERE id = ?")) {
                 statement.setString(1, loggedInUserId);
 
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -110,10 +114,9 @@ public class UserController {
 
             // Insert the picture into the database
             try {
-                ConnectDB connectDB = new ConnectDB();
-                Connection connection = connectDB.getConnection();
+                Connection connection = dataConnect();
                 PreparedStatement statement = connection
-                        .prepareStatement("UPDATE `guidb`.`users` SET `image` = ? WHERE (`id` = ?);");
+                        .prepareStatement("UPDATE `javaproject`.`users` SET `image` = ? WHERE (`id` = ?);");
                 FileInputStream fileInputStream = new FileInputStream(selectedImageFile);
                 statement.setBinaryStream(1, fileInputStream);
                 statement.setString(2, loggedInUserId);
@@ -145,7 +148,7 @@ public class UserController {
         try {
             ConnectDB connectDB = new ConnectDB();
             Connection connection = connectDB.getConnection();
-            String sql = "SELECT image FROM guidb.users WHERE id = ?";
+            String sql = "SELECT image FROM javaproject.users WHERE id = ?";
 
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, loggedInUserId);
