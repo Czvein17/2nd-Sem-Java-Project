@@ -43,6 +43,7 @@ public class clientController {
     public void setLoggedInUserId(String loggedInUserId) {
         this.loggedInUserId = loggedInUserId;
         initialize();
+
     }
 
     @FXML

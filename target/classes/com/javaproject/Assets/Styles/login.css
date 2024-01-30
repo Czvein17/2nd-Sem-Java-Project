@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "Poppins";
+  src: url("../Fonts/Poppins-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../Fonts/Poppins.ttf");
+}
+
+.fontBold {
+  -fx-font-family: "Poppins-Bold";
+}
+
+.fontRegulate {
+  -fx-font-family: "Poppins";
+}
+
+.bg {
+  -fx-background-color: #fdf1e3;
+}
+
+.textField {
+  -fx-border-width: 0 0 2 0;
+  -fx-border-color: black;
+}
+
+.btnLogin {
+  -fx-background-color: transparent;
+  -fx-border-color: black;
+  -fx-border-width: 3px;
+  -fx-text-fill: black;
+  -fx-border-radius: 5px;
+  -fx-background-radius: 5px;
+}
+
+.btnHover:hover {
+  -fx-background-color: black;
+  -fx-text-fill: white;
+  -fx-background-radius: 5px;
+}

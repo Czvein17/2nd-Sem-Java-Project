@@ -37,7 +37,7 @@ public class loginController {
     private CheckBox onShowBTN;
 
     @FXML
-    private Label errorUser, errorPassword;
+    private Label errorUser, errorPassword, remainingTimeLabel;
 
     @FXML
     private PasswordField tfPassword;
@@ -47,97 +47,108 @@ public class loginController {
 
     private loginHandler loginHandler = new loginHandler(); // Create an instance of the LoginHandler class
 
-    @FXML
-    private Label remainingTimeLabel;
     private Timeline remainingTimeUpdater;
     private int remainingSeconds;
-
     private int loginAttempts = 0;
-    private long lastLoginAttemptTime = 0;
+    // private long lastLoginAttemptTime = 0;
 
     @FXML
     void onClickLogin(javafx.event.ActionEvent event) {
         String username = tfUsername.getText();
-        String email = tfUsername.getText();
+        String email = tfUsername.getText(); // Assuming this is intentional
         String password = tfPassword.getText();
 
-        if (email.isEmpty() || password.isEmpty()) {
-            // loginHandler.showErrorDialog("email and password cannot be blank");
-            errorUser.setText("user or email is empty");
-            errorPassword.setText("password is empty");
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            errorUser.setText("user or email or password is empty");
+            errorPassword.setText("");
             // Set a 3-second delay before clearing the error messages
             scheduleErrorClearing();
-
         } else {
             if (remainingSeconds > 0) {
                 loginHandler.showErrorDialog("Cannot login, please wait for the remaining time.");
             } else {
                 try {
                     Connection connection = new ConnectDB().getConnection();
-                    PreparedStatement pst = connection
-                            .prepareStatement(
-                                    "SELECT * FROM javaproject.users WHERE (email=? OR username=? ) AND pass=?");
+                    PreparedStatement pst = connection.prepareStatement(
+                            "SELECT * FROM javaproject.users WHERE (email=? OR username=? )");
                     pst.setString(1, email);
                     pst.setString(2, username);
-                    pst.setString(3, password);
                     ResultSet rs = pst.executeQuery();
-
                     if (rs.next()) {
                         String storedPassword = rs.getString("pass");
-                        if (!password.equals(storedPassword)) {
-                            errorPassword.setText("Password is incorrect");
-                            errorUser.setText(""); // Clear the username error
-                            loginHandler.clearAndFocusUsername(tfUsername, tfPassword); // Pass the TextField and
-                        } else {
+                        if (password.equals(storedPassword)) {
                             String role = rs.getString("role");
                             loginHandler.handleRoleRedirection(role, email, username, password, onLogin);
+                        } else {
+                            errorUser.setText("");
+                            errorPassword.setText("Incorrect Password"); // Set the error message for incorrect password
+                            loginHandler.clearAndFocusUsername(tfUsername, tfPassword);
+                            scheduleErrorClearing();
+                            incrementLoginAttempts();
                         }
                     } else {
-                        errorPassword.setText("Password is incorrect");
-                        // loginHandler.showErrorDialog("Login Failed");
-                        loginHandler.clearAndFocusUsername(tfUsername, tfPassword); // Pass the TextField and
+                        errorUser.setText("Invalid Email or Username");
+                        errorPassword.setText("Invalid Password");
+                        // loginHandler.clearAndFocusUsername(tfUsername, tfPassword);
+                        scheduleErrorClearing();
+                        incrementLoginAttempts();
                     }
-
                 } catch (SQLException | IOException ex) {
                     loginHandler.handleException(ex);
                 }
             }
         }
-        if (loginAttempts >= 2) {
-            loginHandler.showErrorDialog("Exceeded maximum login attempts. Please try again later.");
-            return;
-        }
+    }
 
-        long currentTime = System.currentTimeMillis();
-        long timeSinceLastAttempt = currentTime - lastLoginAttemptTime;
+    private void incrementLoginAttempts() {
+        loginAttempts++;
 
-        if (timeSinceLastAttempt < 60000) { // 60000 milliseconds = 1 minute
-            long remainingTime = 60000 - timeSinceLastAttempt;
-            remainingSeconds = (int) (remainingTime / 1000);
+        if (loginAttempts >= 5) {
+            remainingSeconds = 60; // Set the remaining seconds to 60 (1 minute)
             remainingTimeLabel.setText("You can login after " + remainingSeconds + " seconds");
             remainingTimeUpdater = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateRemainingTime()));
             remainingTimeUpdater.setCycleCount(Timeline.INDEFINITE);
             remainingTimeUpdater.play();
-            return; // Stop further login processing
-        } else {
-            loginAttempts = 0; // Reset login attempts
-            remainingTimeLabel.setText(""); // Clear the remaining time label
-        }
+            loginHandler.showErrorDialog("Exceeded maximum login attempts. Please try again later.");
 
-        loginAttempts++;
-        lastLoginAttemptTime = System.currentTimeMillis();
+        }
     }
+
+    // private void disableLoginControls() {
+    // // You can add logic here to disable login-related controls
+    // // For example, you can disable the login button or text fields during the
+    // // cooldown
+    // tfUsername.setDisable(true);
+    // tfPassword.setDisable(true);
+    // // ... add more controls if needed
+    // }
+
+    // private void enableLoginControls() {
+    // // You can add logic here to enable login-related controls
+    // // For example, you can enable the login button or text fields after the
+    // // cooldown
+    // tfUsername.setDisable(false);
+    // tfPassword.setDisable(false);
+    // // ... add more controls if needed
+    // }
 
     private void updateRemainingTime() {
         remainingSeconds--;
 
         if (remainingSeconds > 0) {
             remainingTimeLabel.setText("You can login after " + remainingSeconds + " seconds");
-
         } else {
             remainingTimeLabel.setText(""); // Clear the remaining time label
             remainingTimeUpdater.stop();
+            // enableLoginControls(); // Enable login controls after the cooldown
+            resetLoginAttempts();
         }
+    }
+
+    private void resetLoginAttempts() {
+        loginAttempts = 0;
+        remainingTimeLabel.setText(""); // Clear the remaining time label
+        remainingTimeUpdater.stop();
     }
 
     @FXML
@@ -195,9 +206,9 @@ public class loginController {
         }
     }
 
-    // New method to schedule error clearing after 3 seconds
+    // New method to schedule error clearing after 5 seconds
     private void scheduleErrorClearing() {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), e -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> {
             errorUser.setText("");
             errorPassword.setText("");
         }));

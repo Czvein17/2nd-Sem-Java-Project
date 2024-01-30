@@ -4,6 +4,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -11,128 +13,163 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="392.0" style="-fx-background-color: #FFFFFF;" stylesheets="@Assets/Style/login.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javaproject.Login.loginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="450.0" styleClass="bg" stylesheets="@../Assets/Styles/login.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javaproject.Login.loginController">
    <children>
-      <Text fill="#233b5d" layoutX="75.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome" textAlignment="CENTER" wrappingWidth="241.13671875">
-         <font>
-            <Font name="System Bold" size="40.0" />
-         </font>
-         <styleClass>
-            <String fx:value="Font" />
-            <String fx:value="Font-Regular" />
-         </styleClass>
-      </Text>
-      <Text fill="#233b5d" layoutX="41.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Poppins;" styleClass="Font-Regular" text="Sign in to continue" textAlignment="CENTER" wrappingWidth="309.13671875">
-         <font>
-            <Font size="17.0" />
-         </font>
-      </Text>
-      <Text fill="#233b5d" layoutX="87.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" wrappingWidth="218.0">
-         <font>
-            <Font size="17.0" />
-         </font>
-         <styleClass>
-            <String fx:value="Font" />
-            <String fx:value="Font-Regular" />
-         </styleClass>
-      </Text>
-      <Text fill="#233b5d" layoutX="87.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" wrappingWidth="309.13671875">
-         <font>
-            <Font size="17.0" />
-         </font>
-         <styleClass>
-            <String fx:value="Font" />
-            <String fx:value="Font-Regular" />
-         </styleClass>
-      </Text>
-      <Button fx:id="onLogin" layoutX="102.0" layoutY="424.0" mnemonicParsing="false" onAction="#onClickLogin" prefHeight="33.0" prefWidth="188.0" style="-fx-text-fill: white;" stylesheets="@Assets/Style/login.css" text="Login" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="CLOSED_HAND" />
-         </cursor>
-         <styleClass>
-            <String fx:value="btn" />
-            <String fx:value="BoldFont" />
-         </styleClass>
-      </Button>
-      <HBox alignment="CENTER" layoutX="87.0" layoutY="250.0" prefHeight="26.0" prefWidth="218.0" styleClass="input" stylesheets="@Assets/Style/login.css">
+      <AnchorPane layoutX="9.0" layoutY="12.0" prefHeight="639.0" prefWidth="432.0" styleClass="bg" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="12.0">
          <children>
-            <ImageView>
-               <image>
-                  <Image url="@Assets/Icons/user.png" />
-               </image>
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="10.0" />
-               </HBox.margin>
-            </ImageView>
-            <TextField fx:id="tfUsername" prefHeight="38.0" prefWidth="179.0" stylesheets="@Assets/Style/login.css">
+            <Text layoutX="33.0" layoutY="88.25" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome!" wrappingWidth="271.576171875" AnchorPane.bottomAnchor="468.0" AnchorPane.leftAnchor="33.0" AnchorPane.topAnchor="41.0">
+               <font>
+                  <Font name="System Bold" size="45.0" />
+               </font>
                <styleClass>
-                  <String fx:value="Background" />
-                  <String fx:value="Font" />
-                  <String fx:value="tf" />
+                  <String fx:value="fontBold" />
+                  <String fx:value="fontRegulate" />
                </styleClass>
-            </TextField>
-         </children>
-      </HBox>
-      <HBox alignment="CENTER" layoutX="87.0" layoutY="342.0" prefHeight="26.0" prefWidth="218.0" stylesheets="@Assets/Style/login.css">
-         <children>
-            <ImageView>
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="10.0" />
-               </HBox.margin>
-               <image>
-                  <Image url="@Assets/Icons/padlock.png" />
-               </image>
-            </ImageView>
-            <PasswordField fx:id="tfPassword" prefHeight="39.0" prefWidth="179.0" stylesheets="@Assets/Style/login.css">
+            </Text>
+            <Text layoutX="33.0" layoutY="121.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign in to continue" wrappingWidth="271.576171875">
+               <font>
+                  <Font size="16.0" />
+               </font>
                <styleClass>
-                  <String fx:value="Background" />
-                  <String fx:value="Font" />
-                  <String fx:value="tf" />
+                  <String fx:value="fontBold" />
+                  <String fx:value="fontRegulate" />
                </styleClass>
-            </PasswordField>
+            </Text>
+            <VBox layoutX="33.0" layoutY="144.0" prefHeight="476.0" prefWidth="367.0" spacing="10.0" styleClass="bg" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="33.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="144.0">
+               <children>
+                  <Label fx:id="remainingTimeLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="38.0" prefWidth="359.0" styleClass="fontRegulate" textAlignment="CENTER" textFill="RED">
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <VBox alignment="CENTER_LEFT" prefHeight="125.0" prefWidth="360.0" spacing="10.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="fontRegulate" text="Email:">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Text>
+                        <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="361.0" spacing="5.0" styleClass="textField">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Assets/Icons/baseline_alternate_email_black_48dp.png" />
+                                 </image>
+                              </ImageView>
+                              <AnchorPane>
+                                 <children>
+                                    <TextField fx:id="tfUsername" prefHeight="35.0" prefWidth="347.0" style="-fx-background-color: transparent;" styleClass="fontRegulate" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                        <Label fx:id="errorUser" prefHeight="17.0" prefWidth="359.0" styleClass="fontRegulate" textFill="RED">
+                           <font>
+                              <Font name="System Italic" size="12.0" />
+                           </font>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="305.0" spacing="10.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="fontRegulate" text="Password:">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Text>
+                        <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="302.0" spacing="5.0" styleClass="textField">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../Assets/Icons/baseline_key_black_48dp.png" />
+                                 </image>
+                              </ImageView>
+                              <AnchorPane>
+                                 <children>
+                                    <PasswordField fx:id="tfPassword" prefHeight="45.0" prefWidth="347.0" style="-fx-background-color: transparent;" styleClass="fontRegulate" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <TextField fx:id="ShowPassword" prefHeight="35.0" prefWidth="347.0" style="-fx-background-color: transparent;" styleClass="fontRegulate" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                        <Label fx:id="errorPassword" prefHeight="17.0" prefWidth="359.0" styleClass="fontRegulate" textFill="RED">
+                           <font>
+                              <Font name="System Italic" size="12.0" />
+                           </font>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <AnchorPane prefHeight="155.0" prefWidth="367.0" style="-fx-background-color: transparent;">
+                     <children>
+                        <ButtonBar buttonMinWidth="0.0" layoutX="28.0" layoutY="121.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="44.0" prefWidth="311.0">
+                          <buttons>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="fontRegulate" text="Don't have an account?" textAlignment="RIGHT" wrappingWidth="189.13671875">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Text>
+                            <Button fx:id="btnCrete" alignment="TOP_LEFT" graphicTextGap="0.0" mnemonicParsing="false" onAction="#onCreate" prefHeight="35.0" prefWidth="158.13671875" style="-fx-background-color: transparent;" styleClass="fontRegulate" text="Sign Up">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Button>
+                          </buttons>
+                        </ButtonBar>
+                        <CheckBox fx:id="onShowBTN" alignment="CENTER" layoutX="306.0" layoutY="-1.0" mnemonicParsing="false" onAction="#onShow" prefHeight="30.0" prefWidth="61.0" styleClass="fontRegulate" text="Show" wrapText="true" AnchorPane.bottomAnchor="126.0" AnchorPane.leftAnchor="306.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </CheckBox>
+                        <Button fx:id="onLogin" layoutY="42.0" mnemonicParsing="false" onAction="#onClickLogin" text="Login" textFill="WHITE" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="42.0">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                           <styleClass>
+                              <String fx:value="btnHover" />
+                              <String fx:value="btnLogin" />
+                           </styleClass>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
          </children>
-         <styleClass>
-            <String fx:value="input" />
-            <String fx:value="Font" />
-            <String fx:value="tf" />
-         </styleClass>
-      </HBox>
-      <Text layoutX="80.0" layoutY="498.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't Have an Account? ">
-         <font>
-            <Font size="13.0" />
-         </font>
-         <styleClass>
-            <String fx:value="Font" />
-            <String fx:value="Font-Regular" />
-         </styleClass>
-      </Text>
-      <Button fx:id="btnCreate" layoutX="226.0" layoutY="477.0" mnemonicParsing="false" onAction="#onCreate" prefHeight="33.0" prefWidth="98.0" style="-fx-background-color: transparent;" stylesheets="@Assets/Style/login.css" text="Create one" textFill="#233b5d">
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor>
-         <styleClass>
-            <String fx:value="btn" />
-            <String fx:value="Font-Regular" />
-         </styleClass>
-      </Button>
-      <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="60.0" layoutY="179.0" prefHeight="29.0" prefWidth="273.0" styleClass="Font" stylesheets="@Assets/Style/login.css" textAlignment="JUSTIFY" textFill="RED">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Label>
+      </AnchorPane>
    </children>
-   <styleClass>
-      <String fx:value="Input" />
-      <String fx:value="Background" />
-      <String fx:value="bgRadius" />
-   </styleClass>
 </AnchorPane>
